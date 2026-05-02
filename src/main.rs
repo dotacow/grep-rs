@@ -1,4 +1,4 @@
-use rs_grep::search;
+use rs_grep::search_utils;
 use std::env;
 use std::error;
 use std::fs;
@@ -6,6 +6,7 @@ use std::fs;
 struct Config {
     query: String,
     contents: String,
+    ignore_case: bool,
 }
 
 fn parse_args(mut argv: env::Args) -> Result<Config, &'static str> {
@@ -14,18 +15,23 @@ fn parse_args(mut argv: env::Args) -> Result<Config, &'static str> {
         Some(arg) => arg,
         None => return Err("Usage: grep-rs <query> <content_file>"),
     };
-    
+
     let contents = match argv.next() {
         Some(arg) => arg,
         None => return Err("Usage: grep-rs <query> <content_file>"),
     };
 
-    Ok(Config { query, contents })
+    let ignore_case = env::var("IGNORE_CASE").is_ok();
+    Ok(Config {
+        query,
+        contents,
+        ignore_case,
+    })
 }
 
 fn run(conf: Config) -> Result<(), Box<dyn error::Error>> {
     let dump = fs::read_to_string(conf.contents)?;
-    let hits = search(&conf.query, &dump);
+    let hits = search_utils::search(&conf.query, &dump, conf.ignore_case);
     for hit in hits {
         println!("{hit}");
     }
