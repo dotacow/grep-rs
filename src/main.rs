@@ -14,7 +14,7 @@ fn parse_args(mut argv: env::Args) -> Result<Config, &'static str> {
         Some(arg) => arg,
         None => return Err("Usage: grep-rs <query> <content_file>"),
     };
-
+    
     let contents = match argv.next() {
         Some(arg) => arg,
         None => return Err("Usage: grep-rs <query> <content_file>"),
