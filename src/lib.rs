@@ -26,4 +26,30 @@ not a duct-tape language.";
             search(query, contents)
         );
     }
+
+    #[test]
+    fn no_match() {
+        let query = "duxct";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.
+not a duct-tape language.";
+
+        let empty_vec: Vec<&str> = vec![];
+        assert_eq!(empty_vec, search(query, contents));
+    }
+
+    #[test]
+    fn case_sense() {
+        let query = "HI";
+        let contents = "\
+		hi.
+		say hi back, would you?";
+
+        assert_ne!(
+            vec!["hi", "say hi back, would you?"],
+            search(query, contents)
+        );
+    }
 }
